@@ -112,8 +112,8 @@ export default function AssetDetailPage() {
         )}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="space-y-5 lg:col-span-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="min-w-0 space-y-5 lg:col-span-2">
           <div className="card p-5">
             <h2 className="mb-4 font-semibold">Details</h2>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
@@ -206,7 +206,7 @@ export default function AssetDetailPage() {
           </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           <div className="card p-5">
             <h2 className="mb-3 font-semibold">Current holder</h2>
             {holder ? (

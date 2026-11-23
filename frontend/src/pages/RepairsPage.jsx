@@ -66,7 +66,7 @@ export default function RepairsPage() {
           <EmptyState icon={Wrench} title="No repairs found" message={status || search ? 'Try another filter.' : 'Logged repairs will appear here.'} />
         ) : (
           <>
-            <div className="overflow-x-auto">
+            <div className="relative overflow-x-auto">
               <table className="w-full min-w-[720px]">
                 <thead className="border-b border-slate-200 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-900/60">
                   <tr>

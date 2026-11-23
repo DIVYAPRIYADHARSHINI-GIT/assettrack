@@ -3,13 +3,13 @@ import { Link } from 'react-router';
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Package, UserCheck, Archive, Wrench, IndianRupee, ShieldAlert, Activity, RefreshCw } from 'lucide-react';
 import { useApi } from '../lib/useApi';
-import { ACTION_META, STATUS, date, money, timeAgo } from '../lib/format';
+import { ACTION_META, STATUS, date, money, moneyCompact, timeAgo } from '../lib/format';
 import { EmptyState, ErrorState, PageHeader, Skeleton, StatusBadge } from '../components/ui';
 import { useTheme } from '../context/ThemeContext';
 
 const CAT_COLORS = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#64748b'];
 
-function Kpi({ icon: Icon, label, value, sub, tone, to }) {
+function Kpi({ icon: Icon, label, value, sub, tone, to, title }) {
   const body = (
     <div className="card flex h-full items-start gap-3 p-4 transition-shadow hover:shadow-md">
       <div className={`grid size-10 shrink-0 place-items-center rounded-lg ${tone}`}>
@@ -17,7 +17,7 @@ function Kpi({ icon: Icon, label, value, sub, tone, to }) {
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">{label}</p>
-        <p className="mt-0.5 truncate text-2xl font-semibold tabular-nums" data-testid={`kpi-${label.toLowerCase().replace(/\s+/g, '-')}`}>{value}</p>
+        <p className="mt-0.5 truncate text-2xl font-semibold tabular-nums" title={title} data-testid={`kpi-${label.toLowerCase().replace(/\s+/g, '-')}`}>{value}</p>
         {sub && <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{sub}</p>}
       </div>
     </div>
@@ -66,13 +66,13 @@ export default function DashboardPage() {
               <Kpi icon={UserCheck} label="Assigned" value={t.assigned} sub={`${pct(t.assigned)}% of all assets`} tone="bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300" to="/assets?status=ASSIGNED" />
               <Kpi icon={Archive} label="In stock" value={t.inStock} sub="Free to assign" tone="bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300" to="/assets?status=IN_STOCK" />
               <Kpi icon={Wrench} label="Under repair" value={t.underRepair} sub={`${money(t.repairCost)} repair spend`} tone="bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300" to="/assets?status=UNDER_REPAIR" />
-              <Kpi icon={IndianRupee} label="Total value" value={money(t.totalValue)} sub={`${money(t.activeValue)} excl. retired`} tone="bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-300" />
+              <Kpi icon={IndianRupee} label="Total value" value={moneyCompact(t.totalValue)} title={money(t.totalValue)} sub={`${money(t.totalValue)} exact · ${moneyCompact(t.activeValue)} excl. retired`} tone="bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-300" />
             </>
           )}
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-2">
-        <div className="card p-5">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="card min-w-0 p-5">
           <h2 className="font-semibold">Assets by category</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Share of all assets</p>
           {loading && !data ? <Skeleton className="mt-4 h-64" /> : categories.length === 0 ? (
@@ -105,7 +105,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="card p-5">
+        <div className="card min-w-0 p-5">
           <h2 className="font-semibold">Assets by status</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Assigned {t?.assigned ?? '–'} vs free {t?.inStock ?? '–'}</p>
           {loading && !data ? <Skeleton className="mt-4 h-64" /> : (
@@ -126,8 +126,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-5">
-        <div className="card lg:col-span-3">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-5">
+        <div className="card min-w-0 lg:col-span-3">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
             <div>
               <h2 className="flex items-center gap-2 font-semibold"><ShieldAlert className="size-4 text-amber-500" /> Warranty expiring</h2>
@@ -165,7 +165,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="card lg:col-span-2">
+        <div className="card min-w-0 lg:col-span-2">
           <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
             <h2 className="flex items-center gap-2 font-semibold"><Activity className="size-4 text-brand-500" /> Recent activity</h2>
           </div>

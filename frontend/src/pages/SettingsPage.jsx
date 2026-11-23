@@ -41,7 +41,7 @@ export default function SettingsPage() {
   return (
     <div>
       <PageHeader title="Settings" subtitle="Your profile, password and appearance" />
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="card p-5 lg:col-span-1">
           <h2 className="mb-4 flex items-center gap-2 font-semibold"><User className="size-4" /> Profile</h2>
           <dl className="space-y-3 text-sm">
@@ -59,7 +59,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <form className="card p-5 lg:col-span-2" onSubmit={submit} noValidate>
+        <form className="card min-w-0 p-5 lg:col-span-2" onSubmit={submit} noValidate>
           <h2 className="mb-1 flex items-center gap-2 font-semibold"><KeyRound className="size-4" /> Change password</h2>
           <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">At least 8 characters with a letter and a number. Other devices will be signed out.</p>
           <div className="grid max-w-md gap-4">

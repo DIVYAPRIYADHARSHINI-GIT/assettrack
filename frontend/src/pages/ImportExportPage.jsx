@@ -102,8 +102,8 @@ export default function ImportExportPage() {
   return (
     <div>
       <PageHeader title="Import / Export" subtitle="Bulk add assets from CSV, or download your inventory" />
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="card p-5 lg:col-span-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="card min-w-0 p-5 lg:col-span-2">
           <h2 className="flex items-center gap-2 font-semibold"><Upload className="size-4" /> Import assets from CSV</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Required columns: <code>name</code>, <code>category</code>, <code>serialNumber</code>. Dates as YYYY-MM-DD or DD/MM/YYYY. Status may be In Stock or Retired. Valid rows are imported; rows with errors are skipped and listed below.
@@ -168,7 +168,7 @@ export default function ImportExportPage() {
                     {preview.errorCount > 0 && <button className="btn-ghost ml-auto text-sm" onClick={downloadErrorReport}><Download className="size-4" /> Error report</button>}
                   </div>
                   <div className="max-h-[50vh] overflow-auto rounded-lg border border-slate-200 dark:border-slate-800">
-                    <table className="w-full min-w-[760px] text-sm">
+                    <table className="w-full min-w-[1040px] text-sm">
                       <thead className="sticky top-0 bg-slate-50 dark:bg-slate-900">
                         <tr>
                           <th className="th">Row</th>
@@ -182,7 +182,7 @@ export default function ImportExportPage() {
                           return (
                             <tr key={r.row} className={r.valid ? '' : 'bg-red-50/60 dark:bg-red-500/5'}>
                               <td className="td align-top text-slate-500 tabular-nums">{r.row}</td>
-                              <td className="td align-top">
+                              <td className="td w-80 min-w-80 align-top">
                                 {r.valid ? <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400"><CheckCircle2 className="size-4" /> OK</span> : (
                                   <ul className="space-y-0.5 text-xs text-red-700 dark:text-red-300">
                                     {r.errors.map((e, i) => <li key={i} className="flex gap-1"><XCircle className="mt-0.5 size-3.5 shrink-0" /><span><b>{e.field}:</b> {e.message}</span></li>)}

@@ -12,7 +12,7 @@ function Section({ title, children, count }) {
         <h2 className="font-semibold">{title}</h2>
         {count !== undefined && <span className="text-sm text-slate-500 dark:text-slate-400">{count}</span>}
       </div>
-      <div className="overflow-x-auto">{children}</div>
+      <div className="relative overflow-x-auto">{children}</div>
     </section>
   );
 }

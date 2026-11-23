@@ -15,6 +15,13 @@ export const REPAIR_STATUS = {
 const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 const inr2 = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const money = (n, decimals = false) => (decimals ? inr2 : inr).format(Number(n) || 0);
+/** Short Indian-style amount for tight spaces: ₹17.06 L, ₹1.2 Cr, ₹85,000. */
+export function moneyCompact(n) {
+  const v = Number(n) || 0;
+  if (Math.abs(v) >= 1e7) return `₹${(v / 1e7).toFixed(2)} Cr`;
+  if (Math.abs(v) >= 1e5) return `₹${(v / 1e5).toFixed(2)} L`;
+  return money(v);
+}
 /** Plain "Rs 1,23,456" for jsPDF, whose built-in fonts have no ₹ glyph. */
 export const moneyPdf = (n) => 'Rs ' + new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(Number(n) || 0);
 

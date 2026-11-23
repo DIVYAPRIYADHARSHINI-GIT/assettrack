@@ -90,8 +90,8 @@ export default function QrLabelsPage() {
           </>
         }
       />
-      <div className="grid gap-5 lg:grid-cols-5">
-        <div className="card no-print lg:col-span-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
+        <div className="card no-print min-w-0 lg:col-span-2">
           <div className="flex items-center gap-2 border-b border-slate-200 p-3 dark:border-slate-800">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
@@ -115,7 +115,7 @@ export default function QrLabelsPage() {
           )}
         </div>
 
-        <div className="lg:col-span-3">
+        <div className="min-w-0 lg:col-span-3">
           {chosen.length === 0 ? (
             <div className="card"><EmptyState icon={QrCode} title="No assets selected" message="Pick assets on the left to build a printable label sheet." /></div>
           ) : (

@@ -113,7 +113,7 @@ export default function UsersPage() {
           </div>
         </div>
         {error ? <ErrorState error={error} onRetry={reload} /> : loading && !data ? <TableSkeleton cols={5} rows={4} /> : data.length === 0 ? <EmptyState icon={UsersIcon} title="No users found" /> : (
-          <div className="overflow-x-auto">
+          <div className="relative overflow-x-auto">
             <table className="w-full min-w-[680px]">
               <thead className="border-b border-slate-200 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-900/60">
                 <tr><th className="th">User</th><th className="th">Role</th><th className="th">Status</th><th className="th">Last sign-in</th><th className="th text-right">Actions</th></tr>
