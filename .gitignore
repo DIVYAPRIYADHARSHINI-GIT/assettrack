@@ -20,3 +20,9 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+# e2e artefacts
+e2e/.downloads/
+e2e/.explore/
+e2e/.run/
+e2e/.chrome-profile-*/
+e2e/results-*.json
