@@ -1,0 +1,15 @@
+{
+  "name": "assettrack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AssetTrack - office asset and inventory tracker. One service: Express API + built React frontend + SQLite.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "install:all": "npm ci --prefix backend && npm ci --prefix frontend --include=dev",
+    "build": "npm run install:all && npm run build --prefix frontend && npx --prefix backend prisma generate --schema backend/prisma/schema.prisma",
+    "start": "npm start --prefix backend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "test": "npm test --prefix backend"
+  }
+}

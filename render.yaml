@@ -1,0 +1,32 @@
+# Render Blueprint for AssetTrack: ONE free web service that serves the API and the built React app.
+# Database: SQLite file inside the service (created, migrated and seeded automatically on start).
+# Free plan note: the free instance has no persistent disk, so the database resets to the seed data
+# whenever the service restarts or is redeployed (and after it sleeps). See README "Known limitations".
+services:
+  - type: web
+    name: assettrack
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    rootDir: .
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        value: file:./data/assettrack.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: LOGIN_RATE_LIMIT
+        value: "10"
+      # Same-origin requests are always allowed. Add other origins here only if a separate frontend is used.
+      - key: CORS_ORIGIN
+        value: http://localhost:5173
