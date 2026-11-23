@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+# env / secrets (only .env.example is committed)
+.env
+.env.*
+!.env.example
+# build output
+dist/
+build/
+.vite/
+coverage/
+# uploads, logs, temp
+uploads/
+logs/
+*.log
+npm-debug.log*
+.tmp/
+.chrome-profile/
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,177 @@
+// AssetTrack database schema (PostgreSQL via Prisma)
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+enum AssetStatus {
+  IN_STOCK
+  ASSIGNED
+  UNDER_REPAIR
+  RETIRED
+}
+
+enum RepairStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum ActivityAction {
+  CREATE
+  UPDATE
+  DELETE
+  ASSIGN
+  RETURN
+  REPAIR_START
+  REPAIR_UPDATE
+  REPAIR_CLOSE
+  RETIRE
+  IMPORT
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(VIEWER)
+  isActive     Boolean   @default(true)
+  // Bumped on password change / deactivation so older JWTs stop working
+  tokenVersion Int       @default(0)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  activities        ActivityLog[]
+  assetsCreated     Asset[]       @relation("AssetCreatedBy")
+  assignmentsMade   Assignment[]  @relation("AssignedBy")
+  returnsRecorded   Assignment[]  @relation("ReturnedBy")
+  repairsLogged     Repair[]      @relation("RepairCreatedBy")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  assets      Asset[]
+}
+
+model Asset {
+  id            Int         @id @default(autoincrement())
+  assetTag      String      @unique
+  name          String
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brand         String?
+  model         String?
+  serialNumber  String      @unique
+  purchaseDate  DateTime?   @db.Date
+  purchasePrice Decimal     @default(0) @db.Decimal(12, 2)
+  vendor        String?
+  warrantyEnd   DateTime?   @db.Date
+  location      String?
+  status        AssetStatus @default(IN_STOCK)
+  notes         String?
+  createdById   Int?
+  createdBy     User?       @relation("AssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  assignments Assignment[]
+  repairs     Repair[]
+  activities  ActivityLog[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([location])
+  @@index([warrantyEnd])
+}
+
+model Assignment {
+  id              Int       @id @default(autoincrement())
+  assetId         Int
+  asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  employeeName    String
+  employeeEmail   String
+  department      String
+  assignedAt      DateTime  @db.Date
+  conditionNotes  String?
+  returnedAt      DateTime? @db.Date
+  returnCondition String?
+  returnNotes     String?
+  assignedById    Int?
+  assignedBy      User?     @relation("AssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
+  returnedById    Int?
+  returnedBy      User?     @relation("ReturnedBy", fields: [returnedById], references: [id], onDelete: SetNull)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([assetId])
+  @@index([returnedAt])
+}
+
+model Repair {
+  id          Int          @id @default(autoincrement())
+  assetId     Int
+  asset       Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  issue       String
+  vendor      String?
+  cost        Decimal      @default(0) @db.Decimal(12, 2)
+  startDate   DateTime     @db.Date
+  endDate     DateTime?    @db.Date
+  status      RepairStatus @default(OPEN)
+  notes       String?
+  createdById Int?
+  createdBy   User?        @relation("RepairCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([assetId])
+  @@index([status])
+}
+
+model ActivityLog {
+  id         Int            @id @default(autoincrement())
+  action     ActivityAction
+  entityType String
+  entityId   Int?
+  assetId    Int?
+  asset      Asset?         @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  userId     Int?
+  user       User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  message    String
+  details    Json?
+  createdAt  DateTime       @default(now())
+
+  @@index([assetId])
+  @@index([createdAt])
+}
+
+// Single-row counters used for gap-free human readable identifiers (AT-0001)
+model Counter {
+  name  String @id
+  value Int    @default(0)
+}
+
+// JWT ids revoked by logout; rows are pruned once the token would have expired
+model RevokedToken {
+  jti       String   @id
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
