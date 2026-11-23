@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-23T07:15:53.850Z",
+  "live": "https://assettrack-99iv.onrender.com",
+  "files": [
+    "VC-1-01a-live-dashboard.png",
+    "VC-1-01b-live-health.png",
+    "VC-1-02-sqlite-database.png",
+    "VC-1-03a-deep-link-asset.png",
+    "VC-1-03b-one-service-routing.png",
+    "VC-1-04-render-blueprint.png",
+    "VC-1-05-security-headers.png",
+    "VC-1-06-bug07-fixed.png",
+    "VC-1-07-bug08-fixed.png",
+    "VC-1-08-docs-and-reports.png",
+    "VC-1-09-testing.png",
+    "VC-1-10-unchanged-assets-list.png",
+    "VC-1-10b-unchanged-ui.png",
+    "VC-2-01-data-resets.png",
+    "VC-2-02-cold-start-notice.png",
+    "VC-2-03-brief-gap.png",
+    "VC-2-04-email-reminders-warranty.png",
+    "VC-2-05-attachments-asset-detail.png",
+    "VC-2-06-employee-view-holder-search.png",
+    "VC-2-07-depreciation-value-kpi.png",
+    "VC-2-08-audit-export-activity.png",
+    "VC-2-09-bundle-size.png",
+    "VC-3-01-divya-assettrack.png"
+  ],
+  "consoleProblems": []
+}
