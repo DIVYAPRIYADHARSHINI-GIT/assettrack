@@ -9,7 +9,8 @@ import { BASE, DOWNLOADS, assert, clickText, fillByLabel, launch, login, makeChe
 const API = (process.env.API_URL || 'http://localhost:4000').replace(/\/$/, '');
 const P = process.env.SHOT_PREFIX ? `${process.env.SHOT_PREFIX}-` : '';
 const RUN = Date.now().toString(36).toUpperCase();
-const { check, results } = makeChecker();
+const openPages = [];
+const { check, results } = makeChecker(() => openPages);
 const browser = await launch();
 
 const apiAs = (page, p, opts = {}) =>
@@ -39,6 +40,7 @@ async function waitDownload(ext, since, ms = 20000) {
 // ---------------------------------------------------------------- login
 console.log('\nLogin');
 const page = await newPage(browser);
+openPages.push(page);
 await check('login page shows the waking-up notice when the API is slow', async () => {
   // Delay /api/health to simulate a sleeping Render instance.
   await page.setRequestInterception(true);
@@ -65,6 +67,7 @@ await check('login page (clean)', async () => {
 // ---------------------------------------------------------------- viewer
 console.log('\nViewer role');
 const viewer = await newPage(browser);
+openPages.push(viewer);
 await login(viewer, 'viewer@assettrack.com', 'Viewer@123');
 await check('viewer can log in and sees the dashboard', async () => {
   await waitText(viewer, 'Total assets');
@@ -106,6 +109,7 @@ await check('API blocks viewer writes (403)', async () => {
 // ---------------------------------------------------------------- admin
 console.log('\nAdmin lifecycle');
 const admin = await newPage(browser);
+openPages.push(admin);
 await login(admin, 'admin@assettrack.com', 'Admin@123');
 await check('dashboard (clean)', async () => {
   await waitText(admin, 'Recent activity');
@@ -438,13 +442,20 @@ await check('users: add, change role, deactivate', async () => {
   await clickText(admin, 'Create user', '[role=dialog] button');
   await admin.waitForFunction(() => !document.querySelector('[role=dialog]'));
   await waitText(admin, NEW_EMAIL);
+  // The list reloads after the create; wait for the new row's controls (slower over the network).
+  await admin.waitForSelector(`select[aria-label="Role for E2E Tester ${RUN}"]`, { timeout: 20000 });
   await admin.select(`select[aria-label="Role for E2E Tester ${RUN}"]`, 'ADMIN');
-  await admin.waitForNetworkIdle({ idleTime: 300 });
+  // Wait for the server to confirm the role change (toast), not for network idle.
+  await waitText(admin, `E2E Tester ${RUN} is now an Admin`, 20000);
   await admin.click(`button[aria-label="Deactivate E2E Tester ${RUN}"]`);
   await waitText(admin, `Deactivate E2E Tester ${RUN}?`);
   await clickText(admin, 'Deactivate', '[role=dialog] button');
   await admin.waitForFunction(() => !document.querySelector('[role=dialog]'));
-  await waitText(admin, 'Deactivated');
+  await admin.waitForFunction(
+    (n) => [...document.querySelectorAll('tbody tr')].some((r) => r.innerText.includes(n) && r.innerText.includes('Deactivated')),
+    { timeout: 20000 },
+    NEW_EMAIL,
+  );
   const u = (await apiAs(admin, '/users')).body.data.find((x) => x.email === NEW_EMAIL);
   assert(u.role === 'ADMIN' && !u.isActive, 'user state');
 });
@@ -461,6 +472,7 @@ await check('settings: change password validates mismatch', async () => {
 // ---------------------------------------------------------------- responsive + dark
 console.log('\nResponsive and dark mode');
 const mobile = await newPage(browser, { width: 390, height: 844, mobile: true, dark: true });
+openPages.push(mobile);
 await login(mobile, 'admin@assettrack.com', 'Admin@123');
 await check('mobile + dark: every page renders without horizontal scroll', async () => {
   for (const p of ['/', '/assets', `/assets/${assetId}`, '/repairs', '/qr-labels?ids=1,2', '/scan', '/import-export', '/reports', '/users', '/settings']) {

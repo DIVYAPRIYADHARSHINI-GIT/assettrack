@@ -122,8 +122,10 @@ export async function fillByLabel(page, label, value, scope = '[role=dialog]') {
   if (!ok) throw new Error(`No field labelled "${label}"`);
 }
 
-export function makeChecker() {
+/** Checker; pass `pages()` returning the open pages so a failure screenshots each of them. */
+export function makeChecker(pages = () => []) {
   const results = [];
+  let n = 0;
   return {
     results,
     async check(name, fn) {
@@ -132,7 +134,15 @@ export function makeChecker() {
         results.push({ name, ok: true });
         console.log(`  PASS ${name}`);
       } catch (e) {
-        results.push({ name, ok: false, error: e.message });
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 50);
+        const prefix = process.env.SHOT_PREFIX ? `${process.env.SHOT_PREFIX}-` : '';
+        const files = [];
+        for (const [i, p] of pages().entries()) {
+          if (!p || p.isClosed()) continue;
+          const f = `${prefix}FAIL-${String(++n).padStart(2, '0')}-${slug}-${i}.png`;
+          await p.screenshot({ path: path.join(SHOTS, f) }).then(() => files.push(f)).catch(() => {});
+        }
+        results.push({ name, ok: false, error: e.message, screenshots: files });
         console.log(`  FAIL ${name}: ${e.message.split('\n')[0]}`);
       }
     },

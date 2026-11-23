@@ -57,10 +57,12 @@ const screenshotSection = PAGES.filter(([k]) => shots.includes(`${set}-${k}.png`
   .join('\n');
 
 let md = template.replace('{{BUG_DETAILS}}', bugDetails).replace('{{SCREENSHOTS}}', screenshotSection);
-if (process.env.LIVE_SHOTS === '1') {
-  const live = shots.filter((f) => f.startsWith('live-')).sort();
-  md = md.replace('{{LIVE_SCREENSHOTS}}', live.map((f) => `<figure class="shot"><img src="screenshots/${f}"><figcaption>${f}</figcaption></figure>`).join('\n'));
-} else md = md.replace('{{LIVE_SCREENSHOTS}}', '');
+// Live-site screenshots: the main flows only (section 7 already shows every page).
+const LIVE = ['01-login', '02-dashboard', '03-assets-list', '04-asset-detail-qr', '06-assign-dialog', '09-repairs', '07-qr-labels', '08b-import-result', '10-reports', '11-users', 'viewer-asset-detail-readonly', 'mobile-dark-dashboard'];
+const liveSection = LIVE.filter((k) => shots.includes(`live-${k}.png`))
+  .map((k) => `<figure class="shot"><img src="screenshots/live-${k}.png"><figcaption>Live: ${(PAGES.find(([p]) => p === k) || [k, k])[1]}</figcaption></figure>`)
+  .join('\n');
+md = md.replace('{{LIVE_SCREENSHOTS}}', liveSection || '_No live screenshots yet._');
 fs.writeFileSync(path.join(R, 'AssetTrack_Final_Report.md'), md);
 
 // --- PDF via Chrome

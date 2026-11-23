@@ -6,8 +6,8 @@ AssetTrack is a full-stack web app: a React frontend and an Express REST API wit
 
 | | |
 | --- | --- |
-| **Live site** | _Pending: added after the Render deploy (see [Deploy on Render](#deploy-on-render-free))_ |
-| **Health check** | `<live-url>/api/health` |
+| **Live site** | **https://assettrack-99iv.onrender.com** |
+| **Health check** | https://assettrack-99iv.onrender.com/api/health |
 | **Repository** | https://github.com/DIVYAPRIYADHARSHINI-GIT/assettrack |
 
 ### Demo logins

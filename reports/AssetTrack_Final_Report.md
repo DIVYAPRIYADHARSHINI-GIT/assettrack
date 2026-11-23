@@ -8,7 +8,8 @@
 | Date | 23 November 2026 |
 | Built by | Divya Priyadharshini |
 | Repository | https://github.com/DIVYAPRIYADHARSHINI-GIT/assettrack |
-| Live site | **Pending.** The Render Blueprint is ready; the owner clicks "New Blueprint" (section 8). This report is updated with the live URL and live test results after the deploy. |
+| Live site | **https://assettrack-99iv.onrender.com** (health: https://assettrack-99iv.onrender.com/api/health) |
+| Demo logins | admin@assettrack.com / Admin@123 (Admin) · viewer@assettrack.com / Viewer@123 (Viewer) |
 
 ---
 
@@ -79,7 +80,7 @@ assettrack/
 | Skeletons, empty states, toasts, confirm dialogs | Done | |
 | Viewer read-only in UI and blocked in API | Done | 12 endpoints tested for 403 |
 | GitHub repo with clean commits | Done | Small, focused commits on `main` (backend setup, auth, assets, dashboard, CSV/QR, frontend pages, fixes, deploy, docs) |
-| Live site | **Pending** | Waiting for the owner's Render click-through |
+| Live site | Done | https://assettrack-99iv.onrender.com on the Render free plan; 36 / 36 live browser checks pass |
 
 ## 3. API list
 
@@ -154,7 +155,7 @@ Indexes on asset status, category, location and warranty end; assignment asset a
 | Browser acceptance, single-service production build | 36 / 36 pass |
 | Browser acceptance, fresh clone from GitHub, built like Render (`npm run build`, `npm start`, no `.env`) | 36 / 36 pass |
 | Page sweep: 13 pages x 2 roles x desktop/mobile x light/dark (104 views) | 0 console errors, 0 failed requests, 0 horizontal overflow (after fixes) |
-| Live site | Pending deploy |
+| **Live site** https://assettrack-99iv.onrender.com, browser acceptance (23 Nov 2026, 12:20 IST) | **36 / 36 pass** |
 
 **Acceptance checks (from the brief)**
 
@@ -303,6 +304,8 @@ Eight bugs were found while testing. All are fixed and re-tested.
 
 ## 7. Working screenshots
 
+Screenshots of the running app (local build). The live-site screenshots follow in section 7b.
+
 <figure class="shot"><img src="screenshots/local-01-login.png"><figcaption>Login page (demo-account buttons)</figcaption></figure>
 <figure class="shot"><img src="screenshots/local-login-waking-up.png"><figcaption>Login: "Waking up the server, please wait…" on a slow first request</figcaption></figure>
 <figure class="shot"><img src="screenshots/local-02-dashboard.png"><figcaption>Dashboard: KPI cards, category donut, status bars, warranty tabs, activity feed</figcaption></figure>
@@ -329,22 +332,39 @@ Eight bugs were found while testing. All are fixed and re-tested.
 <figure class="shot"><img src="screenshots/local-mobile-dark-assets.png"><figcaption>Mobile, dark: assets as cards</figcaption></figure>
 <figure class="shot"><img src="screenshots/local-mobile-dark-menu.png"><figcaption>Mobile, dark: navigation drawer</figcaption></figure>
 
+### 7b. Live site screenshots
+
+Taken on https://assettrack-99iv.onrender.com during the live acceptance run.
+
+<figure class="shot"><img src="screenshots/live-01-login.png"><figcaption>Live: Login page (demo-account buttons)</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-02-dashboard.png"><figcaption>Live: Dashboard: KPI cards, category donut, status bars, warranty tabs, activity feed</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-03-assets-list.png"><figcaption>Live: Assets list: search, filters, sortable columns, status badges, pagination</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-04-asset-detail-qr.png"><figcaption>Live: Asset detail: fields, QR code, current holder, assignment timeline</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-06-assign-dialog.png"><figcaption>Live: Assign dialog</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-09-repairs.png"><figcaption>Live: Repairs: list, cost totals, close action</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-07-qr-labels.png"><figcaption>Live: QR labels: selection and printable sheet preview (PDF download)</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-08b-import-result.png"><figcaption>Live: Import result: valid rows imported, bad rows skipped</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-10-reports.png"><figcaption>Live: Reports page (print / PDF)</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-11-users.png"><figcaption>Live: Users (admin only)</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-viewer-asset-detail-readonly.png"><figcaption>Live: Viewer: asset detail with no edit actions</figcaption></figure>
+<figure class="shot"><img src="screenshots/live-mobile-dark-dashboard.png"><figcaption>Live: Mobile (390 px), dark: dashboard</figcaption></figure>
+
 ## 8. Deployment details
 
 | Item | Value |
 | --- | --- |
-| Live site (frontend + API, one URL) | Pending: added after the owner deploys the Blueprint |
-| Health check | `<live-url>/api/health` |
+| Live site (frontend + API, one URL) | https://assettrack-99iv.onrender.com |
+| Health check | https://assettrack-99iv.onrender.com/api/health returns `{"status":"ok","database":"ok"}` |
 | Database | SQLite file `backend/prisma/data/assettrack.db` inside the Render service, migrated and seeded on start (no Neon project) |
 | GitHub | https://github.com/DIVYAPRIYADHARSHINI-GIT/assettrack (branch `main`) |
 | Host | Render free web service from `render.yaml` (auto-deploys on push to `main`) |
 
-**Deploy steps (owner)**
+**How it was deployed (reproducible)**
 
 1. Sign in at https://dashboard.render.com (free plan, GitHub sign-in; no card).
 2. **New +** -> **Blueprint** -> connect GitHub -> choose **DIVYAPRIYADHARSHINI-GIT/assettrack**.
 3. Keep branch `main` and path `render.yaml`, name it `assettrack`, then **Apply / Deploy Blueprint**. `JWT_SECRET` is generated by Render; nothing needs to be typed in.
-4. When the service shows **Live**, copy its `https://….onrender.com` URL and share it. The agent then runs the live checks and updates this report and the README.
+4. The service went **Live** at https://assettrack-99iv.onrender.com. The same 36-check browser suite was then run against it (all pass), and the README and this report were updated with the link.
 
 **Environment variables (names only)**
 
