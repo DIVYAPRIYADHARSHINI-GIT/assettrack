@@ -109,6 +109,10 @@ async function main() {
     prisma.revokedToken.deleteMany(),
     prisma.counter.deleteMany(),
   ]);
+  // Restart id sequences so a fresh seed always gives AT-0001 id 1, etc.
+  for (const t of ['Asset', 'Category', 'Assignment', 'Repair', 'ActivityLog']) {
+    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "${t}_id_seq" RESTART WITH 1`);
+  }
 
   const adminHash = await bcrypt.hash('Admin@123', 10);
   const viewerHash = await bcrypt.hash('Viewer@123', 10);
