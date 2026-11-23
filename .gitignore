@@ -4,6 +4,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+!frontend/.env.production
 # build output
 dist/
 build/
@@ -26,3 +27,9 @@ e2e/.explore/
 e2e/.run/
 e2e/.chrome-profile-*/
 e2e/results-*.json
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

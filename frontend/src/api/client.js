@@ -1,7 +1,9 @@
 // Tiny fetch wrapper: adds the JWT, parses JSON errors, and reports slow first
 // requests so the UI can show "Waking up the server..." (Render free sleeps).
 
-export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '');
+// Empty VITE_API_URL = same origin (production: the backend serves this frontend).
+// In local dev set VITE_API_URL=http://localhost:4000 (see .env.example).
+export const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
 const TOKEN_KEY = 'assettrack-token';
 
 export const tokenStore = {
@@ -31,7 +33,7 @@ let pendingSlow = 0;
 const emitSlow = () => slowListeners.forEach((fn) => fn(pendingSlow > 0));
 
 export async function api(path, { method = 'GET', body, query, raw = false, signal, timeoutMs = 90_000 } = {}) {
-  const url = new URL(API_URL + '/api' + path);
+  const url = new URL(API_URL + '/api' + path, window.location.origin);
   if (query) {
     for (const [k, v] of Object.entries(query)) {
       if (v === undefined || v === null || v === '' || (Array.isArray(v) && !v.length)) continue;
