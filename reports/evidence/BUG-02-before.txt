@@ -1,0 +1,2 @@
+POST /api/csv/import (admin) with row: Bad Cat,Spaceship,CSV-BAD-1,abc,2026-13-40,Assigned
+row 3 errors included: {"field":"purchaseDate","message":"Invalid input"}

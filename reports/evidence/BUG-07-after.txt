@@ -1,0 +1,5 @@
+/assets/12 200 text/html; charset=utf-8
+/scan/AT-0001 200 text/html; charset=utf-8
+/assets/new 200 text/html; charset=utf-8
+/reports 200 text/html; charset=utf-8
+/assets/index-okvQa0Kx.js 200 text/javascript; charset=utf-8

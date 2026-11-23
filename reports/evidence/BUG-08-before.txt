@@ -1,0 +1,4 @@
+Production build loaded at http://localhost:4300/login
+console: Connecting to http://localhost:4000/api/health violates the Content Security Policy directive "connect-src self". The action has been blocked.
+Result: login never reached the API (sign-in hung; wrong-password message never appeared).
+Cause: vite build picked up VITE_API_URL=http://localhost:4000 from frontend/.env (dev value).

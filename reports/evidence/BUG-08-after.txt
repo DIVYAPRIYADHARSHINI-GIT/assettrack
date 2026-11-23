@@ -1,0 +1,3 @@
+frontend/.env.production sets VITE_API_URL= (same origin) for builds.
+grep localhost:4000 frontend/dist/assets/*.js -> no match
+Acceptance suite against http://localhost:4300 (single service): 36/36 checks passed

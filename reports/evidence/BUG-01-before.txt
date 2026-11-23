@@ -1,0 +1,4 @@
+POST /api/assets/1/assign  (admin token)
+body: {"employeeName":"X","employeeEmail":"x@y.com","department":"D","assignedAt":"2026-11-20"}
+HTTP 400
+{"error":{"message":"Validation failed: conditionNotes: Invalid input: expected nonoptional, received undefined","details":{"fields":{"conditionNotes":"Invalid input: expected nonoptional, received undefined"}}}}

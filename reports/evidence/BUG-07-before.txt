@@ -1,0 +1,3 @@
+GET /assets/12 (Accept: text/html) on the single-service production build
+HTTP 500
+[error] GET /assets/12 Error: ENOENT: no such file or directory, stat frontend/dist/assets/12
