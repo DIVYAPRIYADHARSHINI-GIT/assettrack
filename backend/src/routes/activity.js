@@ -33,7 +33,7 @@ router.get(
     if (req.query.assetId) where.assetId = Number(req.query.assetId) || -1;
     if (req.query.userId) where.userId = Number(req.query.userId) || -1;
     const search = String(req.query.search || '').trim();
-    if (search) where.message = { contains: search, mode: 'insensitive' };
+    if (search) where.message = { contains: search };
 
     const { page, pageSize, skip, take } = parsePaging(req.query, 100);
     const [total, rows] = await Promise.all([

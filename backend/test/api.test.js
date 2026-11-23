@@ -7,7 +7,6 @@ import request from 'supertest';
 process.env.NODE_ENV = 'test';
 if (!process.env.TEST_DATABASE_URL) throw new Error('Set TEST_DATABASE_URL to a disposable database');
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
-process.env.DIRECT_URL = process.env.TEST_DATABASE_URL;
 
 const { createApp } = await import('../src/app.js');
 const { prisma } = await import('../src/lib/prisma.js');

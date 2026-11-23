@@ -12,6 +12,7 @@ import { nextAssetTag } from '../lib/assetTag.js';
 import { logActivity } from '../lib/activity.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { ah } from '../middleware/async.js';
+import { assetTagsBySerialsCI } from '../lib/ci.js';
 
 const router = Router();
 const MAX_ROWS = 1000;
@@ -107,11 +108,7 @@ async function validateRows(records) {
   const catByName = new Map(categories.map((c) => [c.name.toLowerCase(), c]));
 
   const serials = records.map((r) => String(r.serialNumber || '').trim()).filter(Boolean);
-  const existing = await prisma.asset.findMany({
-    where: { serialNumber: { in: serials, mode: 'insensitive' } },
-    select: { serialNumber: true, assetTag: true },
-  });
-  const existingBySerial = new Map(existing.map((e) => [e.serialNumber.toLowerCase(), e.assetTag]));
+  const existingBySerial = await assetTagsBySerialsCI(serials);
   const seenInFile = new Map();
 
   return records.map((rec, i) => {

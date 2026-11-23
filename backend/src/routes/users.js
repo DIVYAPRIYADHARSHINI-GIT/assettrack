@@ -35,7 +35,7 @@ router.get(
     const q = String(req.query.search || '').trim();
     const users = await prisma.user.findMany({
       where: q
-        ? { OR: [{ name: { contains: q, mode: 'insensitive' } }, { email: { contains: q, mode: 'insensitive' } }] }
+        ? { OR: [{ name: { contains: q } }, { email: { contains: q } }] }
         : undefined,
       orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
     });

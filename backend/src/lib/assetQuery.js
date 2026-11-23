@@ -32,7 +32,7 @@ export function buildAssetWhere(query) {
 
   const search = String(query.search || '').trim().slice(0, 100);
   if (search) {
-    const c = { contains: search, mode: 'insensitive' };
+    const c = { contains: search };
     and.push({
       OR: [
         { assetTag: c },

@@ -17,6 +17,7 @@ import { logActivity, diffFields } from '../lib/activity.js';
 import { nextAssetTag } from '../lib/assetTag.js';
 import { createAssetSchema, updateAssetSchema, ASSET_FIELDS, datesInOrder, dateOrderIssue } from '../lib/assetSchema.js';
 import { buildAssetOrder, buildAssetWhere, currentAssignmentInclude, parsePaging } from '../lib/assetQuery.js';
+import { findAssetBySerialCI } from '../lib/ci.js';
 
 const router = Router();
 
@@ -45,10 +46,7 @@ async function ensureCategory(categoryId) {
 }
 
 async function ensureSerialFree(serialNumber, exceptId) {
-  const dupe = await prisma.asset.findFirst({
-    where: { serialNumber: { equals: serialNumber, mode: 'insensitive' }, ...(exceptId ? { NOT: { id: exceptId } } : {}) },
-    select: { assetTag: true },
-  });
+  const dupe = await findAssetBySerialCI(serialNumber, exceptId);
   if (dupe) {
     throw conflict(`Serial number "${serialNumber}" is already used by ${dupe.assetTag}`, {
       fields: { serialNumber: `Already used by ${dupe.assetTag}` },

@@ -5,6 +5,7 @@ import { conflict, notFound } from '../lib/errors.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { ah } from '../middleware/async.js';
 import { logActivity } from '../lib/activity.js';
+import { findCategoryByNameCI } from '../lib/ci.js';
 
 const router = Router();
 
@@ -29,7 +30,7 @@ router.post(
   requireAdmin,
   ah(async (req, res) => {
     const data = parse(schema, req.body);
-    const dupe = await prisma.category.findFirst({ where: { name: { equals: data.name, mode: 'insensitive' } } });
+    const dupe = await findCategoryByNameCI(data.name);
     if (dupe) throw conflict(`Category "${data.name}" already exists`, { fields: { name: 'Already exists' } });
     const cat = await prisma.category.create({ data });
     await logActivity({
@@ -52,9 +53,7 @@ router.patch(
     const existing = await prisma.category.findUnique({ where: { id } });
     if (!existing) throw notFound('Category not found');
     if (data.name) {
-      const dupe = await prisma.category.findFirst({
-        where: { name: { equals: data.name, mode: 'insensitive' }, NOT: { id } },
-      });
+      const dupe = await findCategoryByNameCI(data.name, id);
       if (dupe) throw conflict(`Category "${data.name}" already exists`, { fields: { name: 'Already exists' } });
     }
     const cat = await prisma.category.update({ where: { id }, data });

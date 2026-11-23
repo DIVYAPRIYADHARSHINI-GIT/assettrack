@@ -1,4 +1,4 @@
-// AssetTrack database schema (PostgreSQL via Prisma)
+// AssetTrack database schema (SQLite via Prisma; a single file, seeded on first start)
 
 generator client {
   provider      = "prisma-client-js"
@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -80,10 +79,10 @@ model Asset {
   brand         String?
   model         String?
   serialNumber  String      @unique
-  purchaseDate  DateTime?   @db.Date
-  purchasePrice Decimal     @default(0) @db.Decimal(12, 2)
+  purchaseDate  DateTime?  
+  purchasePrice Decimal     @default(0)
   vendor        String?
-  warrantyEnd   DateTime?   @db.Date
+  warrantyEnd   DateTime?  
   location      String?
   status        AssetStatus @default(IN_STOCK)
   notes         String?
@@ -109,9 +108,9 @@ model Assignment {
   employeeName    String
   employeeEmail   String
   department      String
-  assignedAt      DateTime  @db.Date
+  assignedAt      DateTime 
   conditionNotes  String?
-  returnedAt      DateTime? @db.Date
+  returnedAt      DateTime?
   returnCondition String?
   returnNotes     String?
   assignedById    Int?
@@ -131,9 +130,9 @@ model Repair {
   asset       Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
   issue       String
   vendor      String?
-  cost        Decimal      @default(0) @db.Decimal(12, 2)
-  startDate   DateTime     @db.Date
-  endDate     DateTime?    @db.Date
+  cost        Decimal      @default(0)
+  startDate   DateTime    
+  endDate     DateTime?   
   status      RepairStatus @default(OPEN)
   notes       String?
   createdById Int?

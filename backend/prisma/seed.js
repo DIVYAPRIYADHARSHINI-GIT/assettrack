@@ -99,6 +99,14 @@ const PAST_ASSIGN = [0, 2, 6, 7, 10, 15, 23, 33];
 const PAST_REPAIR = { 6: ['Keyboard keys sticking', 'HP World Service', 3500], 0: ['Fan noise, thermal paste', 'Dell India Service', 1800], 15: ['Dead pixels near edge', 'BenQ Service', 0], 34: ['Key replacement', 'Imagine Service', 1200] };
 
 async function main() {
+  // `node prisma/seed.js --if-empty` (used on server start) keeps existing data.
+  if (process.argv.includes('--if-empty')) {
+    const users = await prisma.user.count();
+    if (users > 0) {
+      console.log(`Database already has ${users} user(s); skipping seed.`);
+      return;
+    }
+  }
   console.log('Seeding AssetTrack…');
   await prisma.$transaction([
     prisma.activityLog.deleteMany(),
@@ -109,10 +117,8 @@ async function main() {
     prisma.revokedToken.deleteMany(),
     prisma.counter.deleteMany(),
   ]);
-  // Restart id sequences so a fresh seed always gives AT-0001 id 1, etc.
-  for (const t of ['Asset', 'Category', 'Assignment', 'Repair', 'ActivityLog']) {
-    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "${t}_id_seq" RESTART WITH 1`);
-  }
+  // Restart autoincrement ids so a fresh seed always gives AT-0001 id 1, etc. (SQLite)
+  await prisma.$executeRawUnsafe(`DELETE FROM sqlite_sequence WHERE name IN ('Asset','Category','Assignment','Repair','ActivityLog')`).catch(() => {});
 
   const adminHash = await bcrypt.hash('Admin@123', 10);
   const viewerHash = await bcrypt.hash('Viewer@123', 10);

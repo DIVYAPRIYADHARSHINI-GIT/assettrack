@@ -60,7 +60,7 @@ router.get(
     if (req.query.assetId) where.assetId = parseId(req.query.assetId, 'assetId');
     const search = String(req.query.search || '').trim();
     if (search) {
-      const c = { contains: search, mode: 'insensitive' };
+      const c = { contains: search };
       where.OR = [{ issue: c }, { vendor: c }, { asset: { assetTag: c } }, { asset: { name: c } }];
     }
     const { page, pageSize, skip, take } = parsePaging(req.query, 200);
